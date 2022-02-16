@@ -1,14 +1,54 @@
 import { App } from 'vue'
 
-import { Button, Row, Col, Form, Input, Space, Table } from 'ant-design-vue'
+import {
+  Button,
+  Row,
+  Col,
+  Form,
+  Input,
+  Space,
+  Table,
+  Typography,
+  Descriptions,
+  Spin,
+  Modal,
+  Upload,
+  Tooltip
+} from 'ant-design-vue'
 
 const { Item: FormItem } = Form
 
 const { Password: InputPassword } = Input
 
-const useComponents = [Button, Row, Col, Form, Input, Space, Table]
+const { Paragraph } = Typography
 
-const components = [FormItem, InputPassword]
+const { Item: DescriptionsItem } = Descriptions
+
+const { Dragger: UploadDragger } = Upload
+
+const useComponents = [
+  Button,
+  Row,
+  Col,
+  Form,
+  Input,
+  Space,
+  Table,
+  Typography,
+  Descriptions,
+  Spin,
+  Modal,
+  Upload,
+  Tooltip
+]
+
+const components = [
+  FormItem,
+  InputPassword,
+  Paragraph,
+  DescriptionsItem,
+  UploadDragger
+]
 
 export default {
   install(app: App): void {

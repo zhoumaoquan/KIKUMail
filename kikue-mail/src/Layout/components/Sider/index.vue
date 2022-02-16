@@ -8,16 +8,16 @@
       </div>
       <div class="app-sider-box__menu">
         <item
-          :icon="require('@/assets/image/sider-1.png')"
-          :icon-active="require('@/assets/image/sider-1-active.png')"
-          title="收件箱"
-          path="/"
-        />
-        <item
           :icon="require('@/assets/image/sider-2.png')"
           :icon-active="require('@/assets/image/sider-2-active.png')"
+          title="收件箱"
+          path="/inbox"
+        />
+        <item
+          :icon="require('@/assets/image/sider-1.png')"
+          :icon-active="require('@/assets/image/sider-1-active.png')"
           title="回复记录"
-          path="/"
+          path="/reply"
         />
       </div>
     </div>

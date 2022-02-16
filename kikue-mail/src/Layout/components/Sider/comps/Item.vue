@@ -1,7 +1,7 @@
 <template>
   <router-link class="sider-item" :to="path">
     <div class="sider-item-icon">
-      <img v-if="path === currentPath" :src="iconActive" />
+      <img v-if="currentPath.indexOf(path) > -1" :src="iconActive" />
       <img v-else :src="icon" />
     </div>
     <span class="sider-item-title">{{ title }}</span>
@@ -37,7 +37,6 @@ export default defineComponent({
     const route = useRoute()
 
     const currentPath = computed(() => route.path)
-    console.log(currentPath.value)
 
     return {
       currentPath

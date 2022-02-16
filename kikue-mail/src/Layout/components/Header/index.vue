@@ -7,25 +7,45 @@
       </p>
     </div>
     <div class="app-header-right">
-      <a-button type="primary" size="large">个人中心</a-button>
+      <template v-if="abort">
+        <a-button type="primary" size="large">退出登录</a-button>
+      </template>
+      <template v-else>
+        <a-button type="primary" size="large" @click="routerLink"
+          >个人中心</a-button
+        >
+      </template>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, PropType } from 'vue'
 
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'AppHearder',
+  props: {
+    abort: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    }
+  },
   setup() {
+    const router = useRouter()
+
     const route = useRoute()
 
     const title = computed(() => route.meta.title)
 
+    const routerLink = () => {
+      router.push('/archive')
+    }
+
     return {
-      title
+      title,
+      routerLink
     }
   }
 })
@@ -33,6 +53,8 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .app-header {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;

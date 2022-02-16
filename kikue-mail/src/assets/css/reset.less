@@ -67,3 +67,27 @@ img {
     border: none;
     vertical-align: middle;
 }
+
+// 文本超出省略(单行)
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis; //文本溢出显示省略号
+  white-space: nowrap; //文本不会换行
+}
+
+.ant-descriptions-view {
+  box-sizing: border-box;
+  padding: 30px 40px 14px 40px;
+  background-color: #f7f9fe;
+  border-radius: 10px;
+}
+
+.ant-descriptions-item-label,
+.ant-descriptions-item-content {
+  font-size: 16px;
+  color: #2d3541;
+}
+.ant-descriptions-item-label {
+  min-width: 60px;
+}

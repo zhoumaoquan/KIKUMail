@@ -14,56 +14,7 @@
             <div class="app-login-box">
               <p class="title">用户登录</p>
 
-              <a-form
-                hideRequiredMark
-                :wrapper-col="{ span: 18 }"
-                size="large"
-                layout="vertical"
-                @finish="login"
-              >
-                <a-form-item
-                  has-feedback
-                  :colon="false"
-                  name="username"
-                  label="账号"
-                >
-                  <a-input autocomplete size="large" placeholder="请输入账号" />
-                </a-form-item>
-                <a-form-item
-                  has-feedback
-                  :colon="false"
-                  name="password"
-                  label="密码"
-                >
-                  <a-input-password
-                    autocomplete="off"
-                    size="large"
-                    placeholder="请输入密码"
-                  />
-                </a-form-item>
-                <a-form-item
-                  has-feedback
-                  :colon="false"
-                  name="verify"
-                  label="验证码"
-                >
-                  <a-input
-                    style="width: 55%"
-                    size="large"
-                    autocomplete="off"
-                    placeholder="请输入验证码"
-                  />
-
-                  <div class="verify">
-                    <img src="@/assets/image/login-1.png" />
-                  </div>
-                </a-form-item>
-                <a-form-item :wrapper-col="{ span: 23 }">
-                  <a-button htmlType="submit" size="large" type="primary"
-                    >登录</a-button
-                  >
-                </a-form-item>
-              </a-form>
+              <login-form></login-form>
             </div>
           </div>
         </a-col>
@@ -72,10 +23,17 @@
   </div>
 </template>
 
-<script setup lang="ts">
-const login = () => {
-  console.log(123)
-}
+<script lang="ts">
+import { defineComponent } from 'vue'
+
+import LoginForm from './form.vue'
+
+export default defineComponent({
+  name: 'AppLogin',
+  components: {
+    LoginForm
+  }
+})
 </script>
 
 <style lang="less" scoped>
@@ -125,20 +83,6 @@ const login = () => {
       font-weight: bold;
       letter-spacing: 10px;
       color: #333333;
-    }
-
-    .verify {
-      display: inline-block;
-      max-width: 100%;
-      width: 40%;
-      height: 60px;
-      margin-left: 5%;
-      margin-bottom: -10px;
-      cursor: pointer;
-
-      img {
-        max-width: 100%;
-      }
     }
 
     /deep/ .ant-input-lg {

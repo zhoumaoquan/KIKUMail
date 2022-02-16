@@ -1,21 +1,33 @@
 <template>
-  <div class="app-main-layout">
-    <AppHeader>
-      <slot name="header"></slot>
-    </AppHeader>
-    <div class="app-main-box">
-      <slot></slot>
+  <a-spin size="large" :spinning="loading" :delay="300">
+    <div class="app-main-layout">
+      <AppHeader :abort="abort">
+        <slot name="header"></slot>
+      </AppHeader>
+      <div class="app-main-box">
+        <slot></slot>
+      </div>
     </div>
-  </div>
+  </a-spin>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import AppHeader from '../Header/index.vue'
 
 export default defineComponent({
   name: 'AppLayout',
+  props: {
+    abort: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    },
+    loading: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    }
+  },
   components: {
     AppHeader
   }

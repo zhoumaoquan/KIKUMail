@@ -9,42 +9,79 @@
     </a-input>
 
     <div class="app-table-list">
-      <a-table :columns="columns"></a-table>
+      <a-table
+        :loading="loading"
+        :columns="columns"
+        :data-source="dataSource"
+        :scroll="{ y: 600 }"
+        rowKey="id"
+        :rowClassName="rowClassName"
+        :pagination="pagination"
+      >
+        <template #headerCell="{ column }">
+          <template v-if="column.key === 'icon'">
+            <img src="@/assets/image/letter.png" />
+          </template>
+        </template>
+
+        <template #bodyCell="{ column, record }">
+          <template v-if="column.key === 'icon'">
+            <slot name="icon" :record="record">
+              <img src="@/assets/image/haveread.png" />
+            </slot>
+          </template>
+          <template v-if="column.key === 'action'">
+            <a-button type="link" @click="routerLink(record.id)"
+              >查看详情</a-button
+            >
+          </template>
+        </template>
+      </a-table>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
-const columns = [
-  {
-    title: '发件人',
-    dataIndex: 'recipient',
-    key: 'recipient'
-  },
-  {
-    title: '主题',
-    dataIndex: 'theme',
-    key: 'theme'
-  },
-  {
-    title: '时间',
-    dataIndex: 'time',
-    key: 'time'
-  },
-  {
-    title: '操作',
-    dataIndex: 'action',
-    key: 'action'
-  }
-]
+import { TableColumnsType } from 'ant-design-vue'
+
+import { IPagination } from './types'
 
 export default defineComponent({
   name: 'TableList',
-  setup() {
+  props: {
+    columns: {
+      type: Array as PropType<TableColumnsType>,
+      required: true
+    },
+    dataSource: {
+      type: Array as PropType<any[]>,
+      required: true
+    },
+    loading: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    },
+    pagination: {
+      type: Object as PropType<IPagination>
+    },
+    linkCallback: {
+      type: Function as PropType<(id: number) => void>
+    }
+  },
+  setup(props) {
+    const rowClassName = (record: any) => {
+      return record.is_read ? 'haveread' : 'unread'
+    }
+
+    const routerLink = (id: number): void => {
+      props.linkCallback?.(id)
+    }
+
     return {
-      columns
+      rowClassName,
+      routerLink
     }
   }
 })
@@ -73,11 +110,86 @@ export default defineComponent({
   border-right: 2px solid #b4b6c0;
 }
 
+/deep/ .ant-table-thead > tr > th {
+  background-color: #eff2f5;
+  border-bottom: none;
+  color: #2d3541;
+}
+
+/deep/
+  .ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  content: none;
+}
+
+/deep/.ant-table-body {
+  &::-webkit-scrollbar {
+    height: 4px;
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: #edf1fb;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #349e81;
+    border-radius: 20px;
+  }
+}
+
+/deep/ .ant-table-tbody > tr > td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e5e9f2;
+}
+
+/deep/ .ant-table-tbody > tr.ant-table-row:hover > td {
+  background-color: #f4f8fe;
+}
+
+/deep/ .ant-btn-link {
+  font-weight: 300;
+  color: #2d3541;
+}
+
+/deep/ .ant-btn-link:hover,
+.ant-btn-link:focus {
+  color: #349e81;
+}
+
+/deep/ .ant-pagination-item {
+  border-radius: 50%;
+  border: none;
+  line-height: 32px;
+}
+
+/deep/ .ant-pagination-item-active {
+  background-color: #349e81;
+}
+
+/deep/ .ant-pagination-item-active a {
+  color: #fff;
+}
+
+/deep/ .ant-pagination-prev .ant-pagination-item-link,
+/deep/ .ant-pagination-next .ant-pagination-item-link {
+  border: none;
+}
+
 .app-table {
   padding-top: 35px;
 }
 
 .app-table-list {
   margin-top: 20px;
+}
+
+/deep/ .unread {
+  color: #2d3541;
+}
+
+/deep/ .haveread {
+  color: #91959c;
 }
 </style>

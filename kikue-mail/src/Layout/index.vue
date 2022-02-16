@@ -14,7 +14,21 @@ import { Layout } from 'ant-design-vue'
 
 import AppSider from './components/Sider/index.vue'
 
+import { useRequest } from 'vue-request'
+
+import { getUserInfo } from '@/service/Api/user'
+
+import * as Storage from '@/utils/storage'
+
+import { USER_INFO } from '@/assets/context'
+
 const { Sider, Content } = Layout
+
+useRequest(getUserInfo, {
+  onSuccess(data) {
+    Storage.setStorage(USER_INFO, data.data)
+  }
+})
 </script>
 
 <style lang="less" scoped>
