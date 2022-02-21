@@ -23,16 +23,18 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import Layout from '@/Layout/components/Layout/index.vue'
 import PageHeader from '@/components/PageHeader/index.vue'
 import FileList from '@/components/FileList'
 
 import { message } from 'ant-design-vue'
 
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute, useRouter, RouteLocationNormalizedLoaded } from 'vue-router'
 
 import { useRequest } from 'vue-request'
+
+import { debounce } from '@/utils'
 
 import { inboxDetail } from '@/service/Api/Inbox'
 
@@ -46,12 +48,24 @@ const router = useRouter()
 
 const id = computed(() => Number(route.params.id))
 
-const { loading, data } = useRequest(inboxDetail, {
+const { loading, data, run } = useRequest(inboxDetail, {
   defaultParams: [id.value],
   formatResult: (data) => {
     return data.data
   }
 })
+
+watch(
+  () => route,
+  debounce((newRoute: RouteLocationNormalizedLoaded) => {
+    if (newRoute.name && newRoute.params?.id) {
+      run(Number(newRoute.params.id))
+    }
+  }, 300),
+  {
+    deep: true
+  }
+)
 
 const annex = computed(() => data.value?.annex)
 const inquire = computed(() => {

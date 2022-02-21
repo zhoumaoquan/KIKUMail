@@ -62,6 +62,7 @@ const routes: Array<RouteRecordRaw> = [
           {
             path: '/inbox/details/:id',
             component: InboxDetails,
+            name: 'InboxDetails',
             meta: {
               title: '邮件详情'
             }

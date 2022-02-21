@@ -70,6 +70,7 @@ import { useRequest } from 'vue-request'
 import { message } from 'ant-design-vue'
 import { replyDetail, IReplyParams, replyMail } from '@/service/Api/Inbox'
 import { getStorage } from '@/utils/storage'
+import { debounce } from '@/utils'
 import { USER_INFO } from '@/assets/context'
 import { REPLY } from '../config'
 import { ValueKey, SetReplyFn } from './types'
@@ -135,7 +136,7 @@ const inquire = computed(() => {
 })
 const original = computed(() => data.value?.original)
 
-const sendMail = () => {
+const sendMail = debounce(() => {
   replyContent.reply_content = editorRef.value?.getHTMLContent(undefined) || ''
 
   if (!replyContent.reply_content.trim().length) {
@@ -152,7 +153,7 @@ const sendMail = () => {
   })
 
   run(formData)
-}
+}, 500)
 </script>
 
 <style lang="less" scoped>
