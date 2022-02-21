@@ -8,6 +8,7 @@
     </template>
 
     <TableList
+      v-model:search="search"
       :columns="columns"
       :data-source="list || []"
       :pagination="pagination"
@@ -27,6 +28,8 @@
 </template>
 
 <script lang="ts" setup>
+import { ref, watch } from 'vue'
+
 import Layout from '@/Layout/components/Layout/index.vue'
 
 import TableList from '@/components/TableList/index.vue'
@@ -35,15 +38,44 @@ import useListRequest from '@/components/TableList/useListRequest'
 
 import { useRouter } from 'vue-router'
 
+import { useRequest } from 'vue-request'
+
 import { columns } from './config'
 
 import { inboxList } from '@/service/Api/Inbox'
 
+import { setReadInbox } from '@/service/Api/Inbox'
+
 const router = useRouter()
 
-const { loading, pagination, list, amount } = useListRequest(inboxList)
+const search = ref('')
 
-const routerLink = (id: number) => {
+const {
+  loading,
+  pagination,
+  list,
+  amount,
+  run: runList
+} = useListRequest(inboxList)
+
+const { run } = useRequest(setReadInbox, {
+  manual: true
+})
+
+watch(search, (v) => {
+  const params = {
+    page: 1,
+    text: v
+  }
+
+  runList(params)
+})
+
+const routerLink = (id: number, is_read: boolean | undefined) => {
+  if (!is_read) {
+    run(id)
+  }
+
   router.push(`/inbox/details/${id}`)
 }
 </script>

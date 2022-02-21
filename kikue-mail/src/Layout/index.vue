@@ -45,6 +45,7 @@ useRequest(getUserInfo, {
 
 .app-main {
   display: flex;
+  flex-direction: column;
   height: calc(100vh - 70px);
   overflow: hidden;
 }

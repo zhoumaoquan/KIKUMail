@@ -6,17 +6,10 @@ export const columns = [
     width: '5%'
   },
   {
-    title: '发件人',
-    dataIndex: 'sender',
-    key: 'sender',
-    width: '15%',
-    ellipsis: true
-  },
-  {
     title: '主题',
     dataIndex: 'subject',
     key: 'subject',
-    width: '55%',
+    width: '15%',
     ellipsis: true
   },
   {
@@ -26,11 +19,16 @@ export const columns = [
     width: '15%'
   },
   {
+    title: '回复内容',
+    dataIndex: 'content',
+    key: 'content',
+    width: '55%',
+    ellipsis: true
+  },
+  {
     title: '操作',
     dataIndex: 'action',
     key: 'action',
     width: '10%'
   }
 ]
-
-export const REPLY = Symbol()

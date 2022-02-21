@@ -8,7 +8,9 @@
     </div>
     <div class="app-header-right">
       <template v-if="abort">
-        <a-button type="primary" size="large">退出登录</a-button>
+        <a-button type="primary" size="large" @click="signOut"
+          >退出登录</a-button
+        >
       </template>
       <template v-else>
         <a-button type="primary" size="large" @click="routerLink"
@@ -20,9 +22,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, PropType } from 'vue'
+import { defineComponent, computed, PropType, createVNode } from 'vue'
 
 import { useRoute, useRouter } from 'vue-router'
+
+import { Modal, message } from 'ant-design-vue'
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue'
+
+import { clearStorage } from '@/utils/storage'
 
 export default defineComponent({
   name: 'AppHearder',
@@ -43,9 +50,29 @@ export default defineComponent({
       router.push('/archive')
     }
 
+    const signOut = () => {
+      Modal.confirm({
+        title: '您确定要退出当前登录账号吗?',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: createVNode(
+          'div',
+          { style: 'color:red;' },
+          '点击确定退出登录'
+        ),
+        onOk() {
+          clearStorage()
+          message.success('退出登录成功', 2, () => {
+            router.replace('/login')
+          })
+        },
+        class: 'test'
+      })
+    }
+
     return {
       title,
-      routerLink
+      routerLink,
+      signOut
     }
   }
 })

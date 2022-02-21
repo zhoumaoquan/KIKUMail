@@ -2,40 +2,11 @@ import http from '../index'
 
 import { IResponse } from '../request/types'
 
-import { ITableList } from './types'
+import type { ITableList, IListParams, Receive, Original, Annex } from './types'
 
 enum InboxApi {
-  List = '/api/contribution/list'
-}
-
-/**
- * 列表请求参数 类型
- */
-export interface IListParams {
-  text: string
-  page: number
-}
-
-/**
- * 收件列表 单项类型
- */
-export interface Receive {
-  id: number
-  sender: string
-  subject: string
-  create_at: string
-  is_read: boolean
-  is_read_str: string
-}
-
-/**
- * 附件类型
- */
-export interface Annex {
-  id: number
-  path: string
-  filename: string
-  extension: string
+  List = '/api/contribution/list',
+  Reply = '/api/contribution/reply'
 }
 
 /**
@@ -51,16 +22,6 @@ export interface IInboxDetails {
 }
 
 /**
- * 回复详情数据 原始邮件信息 类型
- */
-export interface Original {
-  sender: string
-  create_at: string
-  rcpt: string
-  subject: string
-}
-
-/**
  * 回复详情 类型
  */
 export interface IReplyDetails {
@@ -68,6 +29,12 @@ export interface IReplyDetails {
   rcpt: string
   subject: string
   original: Original
+}
+
+export interface IReplyParams {
+  reply_content: string
+  contribution_annex_id: number
+  files: any
 }
 
 // 收件箱列表
@@ -82,6 +49,14 @@ export function inboxList(params: IListParams): Promise<ITableList<Receive[]>> {
   })
 }
 
+// 设置邮件为已读
+export function setReadInbox(id: number): Promise<IResponse> {
+  return http.request({
+    url: `/api/contribution/${id}/read`,
+    method: 'PATCH'
+  })
+}
+
 // 收件详情
 export function inboxDetail(id: number): Promise<IResponse<IInboxDetails>> {
   return http.request({
@@ -90,9 +65,19 @@ export function inboxDetail(id: number): Promise<IResponse<IInboxDetails>> {
   })
 }
 
+// 回复邮件所需信息
 export function replyDetail(id: number): Promise<IResponse<IReplyDetails>> {
   return http.request({
     url: `/api/contribution/${id}/reply`,
     method: 'GET'
+  })
+}
+
+// 回复邮件
+export function replyMail(params: IReplyParams | any): Promise<IResponse> {
+  return http.request({
+    url: InboxApi.Reply,
+    method: 'POST',
+    data: params
   })
 }

@@ -102,6 +102,8 @@ class KRequest {
             resolve(result)
           } else {
             errorMiddleware(result.code, result.msg)
+
+            reject(result)
           }
         })
         .catch((err) => {

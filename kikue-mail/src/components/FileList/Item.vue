@@ -5,23 +5,42 @@
     </div>
     <div class="file-item-right">
       <p class="title ellipsis">
-        {{ item?.filename }}
+        {{ item?.filename || item?.name }}
       </p>
 
-      <div class="control">
-        <div class="control-item">
-          <a href="javascript:;" @click="preview">预览</a>
+      <template v-if="showType === Display.EXHIBIT">
+        <div class="control">
+          <div class="control-item">
+            <a href="javascript:;" @click="preview">预览</a>
+          </div>
+          <div class="control-item">
+            <a :href="item?.path" :download="item?.filename">下载</a>
+          </div>
+          <div class="control-item" @click="reply(item?.id, ReplyType.REPLY)">
+            <a href="javascript:;">回复</a>
+          </div>
+          <div class="control-item" @click="reply(item?.id, ReplyType.HIRE)">
+            <a href="javascript:;">录用</a>
+          </div>
         </div>
-        <div class="control-item">
-          <a :href="item?.path" :download="item?.filename">下载</a>
+      </template>
+      <template v-if="showType === Display.RECORD">
+        <div class="control">
+          <div class="control-item">
+            <a href="javascript:;" @click="preview">预览</a>
+          </div>
+          <div class="control-item">
+            <a :href="item?.path" :download="item?.filename">下载</a>
+          </div>
         </div>
-        <div class="control-item" @click="reply(item?.id)">
-          <a href="javascript:;">回复</a>
+      </template>
+      <template v-if="showType === Display.UPLOAD">
+        <div class="control">
+          <div class="control-item">
+            <a href="javascript:;" @click="removeItem">删除</a>
+          </div>
         </div>
-        <div class="control-item">
-          <a href="javascript:;">录用</a>
-        </div>
-      </div>
+      </template>
     </div>
   </div>
 </template>
@@ -33,20 +52,30 @@ import { useRouter } from 'vue-router'
 
 import { message } from 'ant-design-vue'
 
-import { pressReg } from './config'
+import { pressReg, ReplyType } from './config'
 
 import { fileOpenPreview } from '@/utils'
 
-import type { Annex } from '@/service/Api/Inbox'
+import type { Annex } from '@/service/Api/types'
+
+import { Display } from './config'
 
 export default defineComponent({
   name: 'FileListItem',
   props: {
     item: {
       type: Object as PropType<Annex>
+    },
+    index: {
+      type: Number as PropType<number>
+    },
+    showType: {
+      type: Number as PropType<Display>,
+      default: Display.EXHIBIT
     }
   },
-  setup(props) {
+  emits: ['remove'],
+  setup(props, { emit }) {
     const router = useRouter()
     const suffix = computed(() => props.item?.extension || '')
     const url = computed(() => props.item?.path || '')
@@ -57,15 +86,27 @@ export default defineComponent({
       fileOpenPreview(url.value)
     }
 
-    const reply = (id: number | undefined): void => {
+    const reply = (id: number | undefined, type: ReplyType): void => {
       if (id) {
-        router.push(`/inbox/editor/${id}`)
+        router.push({
+          path: `/inbox/editor/${id}`,
+          query: {
+            type
+          }
+        })
       }
+    }
+
+    const removeItem = () => {
+      emit('remove', props.index)
     }
 
     return {
       preview,
-      reply
+      reply,
+      ReplyType,
+      removeItem,
+      Display
     }
   }
 })

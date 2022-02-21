@@ -4,13 +4,12 @@
     title="上传附件"
     :z-index="10001"
     @cancel="handleCancel"
+    @ok="saveFile"
   >
     <a-upload-dragger
-      v-model:fileList="fileList"
-      name="file"
+      :fileList="fileList"
+      :before-upload="beforeUpload"
       :multiple="true"
-      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-      @change="handleChange"
     >
       <p class="ant-upload-drag-icon">
         <inbox-outlined></inbox-outlined>
@@ -22,9 +21,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, PropType, ref, inject } from 'vue'
+
+import { message } from 'ant-design-vue'
 
 import { InboxOutlined } from '@ant-design/icons-vue'
+
+import { REPLY } from '@/views/Inbox/config'
+
+import type { UploadProps } from 'ant-design-vue'
+
+import { SetReplyFn, ValueKey } from '@/views/Inbox/Editor/types'
 
 export default defineComponent({
   name: 'AppUpload',
@@ -36,20 +43,36 @@ export default defineComponent({
   },
   emits: ['update:visible'],
   setup(props, { emit }) {
-    const fileList = ref()
+    const fileList = ref<UploadProps['fileList'][]>([])
 
-    const handleChange = () => {
-      console.log(1)
-    }
+    const fn = inject<SetReplyFn>(REPLY)
 
     const handleCancel = () => {
+      fileList.value = []
       emit('update:visible', false)
+    }
+
+    const beforeUpload: UploadProps['beforeUpload'] = (file) => {
+      fileList.value = [...fileList.value, file]
+
+      return false
+    }
+
+    const saveFile = () => {
+      if (fileList.value.length === 0) {
+        return message.warning('请上传附件')
+      }
+
+      fn?.(ValueKey.Files, fileList.value)
+
+      handleCancel()
     }
 
     return {
       fileList,
-      handleChange,
-      handleCancel
+      handleCancel,
+      beforeUpload,
+      saveFile
     }
   },
   components: {

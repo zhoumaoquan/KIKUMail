@@ -4,6 +4,8 @@
       style="width: 400px"
       size="large"
       placeholder="请输入邮件关键字搜索"
+      :value="search"
+      @change="searchInput"
     >
       <template #prefix> 搜索 </template>
     </a-input>
@@ -30,8 +32,16 @@
               <img src="@/assets/image/haveread.png" />
             </slot>
           </template>
+          <template v-if="column.key === 'subject'">
+            <a-tooltip color="#349E81" placement="topLeft">
+              <template #title>{{ record.subject }}</template>
+              {{ record.subject }}
+            </a-tooltip>
+          </template>
           <template v-if="column.key === 'action'">
-            <a-button type="link" @click="routerLink(record.id)"
+            <a-button
+              type="link"
+              @click="routerLink(record.id, record?.is_read)"
               >查看详情</a-button
             >
           </template>
@@ -51,6 +61,10 @@ import { IPagination } from './types'
 export default defineComponent({
   name: 'TableList',
   props: {
+    search: {
+      type: String as PropType<string>,
+      default: ''
+    },
     columns: {
       type: Array as PropType<TableColumnsType>,
       required: true
@@ -67,21 +81,31 @@ export default defineComponent({
       type: Object as PropType<IPagination>
     },
     linkCallback: {
-      type: Function as PropType<(id: number) => void>
+      type: Function as PropType<
+        (id: number, is_read?: boolean | undefined) => void
+      >
     }
   },
-  setup(props) {
+  emits: ['update:search'],
+  setup(props, { emit }) {
     const rowClassName = (record: any) => {
       return record.is_read ? 'haveread' : 'unread'
     }
 
-    const routerLink = (id: number): void => {
-      props.linkCallback?.(id)
+    const routerLink = (id: number, is_read: boolean | undefined): void => {
+      props.linkCallback?.(id, is_read)
+    }
+
+    const searchInput = (e: InputEvent) => {
+      const value = (e.target as HTMLInputElement).value
+
+      emit('update:search', value)
     }
 
     return {
       rowClassName,
-      routerLink
+      routerLink,
+      searchInput
     }
   }
 })

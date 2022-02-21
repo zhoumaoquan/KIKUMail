@@ -103,6 +103,9 @@ const { loading: loginLoading, run } = useRequest(() => userLogin(formDate), {
   debounceInterval: 500,
   onSuccess: (data) => {
     loginSuccess(data)
+  },
+  onError: () => {
+    refresh()
   }
 })
 

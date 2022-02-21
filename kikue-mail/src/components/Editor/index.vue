@@ -13,7 +13,7 @@ import useWangEditor from '@/plugin/wangEditor'
 
 export default defineComponent({
   name: 'AppEditor',
-  setup() {
+  setup(props, { expose }) {
     const editor = ref<HTMLElement>()
 
     const visible = ref(false)
@@ -26,9 +26,21 @@ export default defineComponent({
       visible.value = true
     }
 
+    function getHTMLContent(html: string | undefined) {
+      if (html) {
+        instance.value?.txt.html(html)
+      } else {
+        return instance.value?.txt.html()
+      }
+    }
+
+    expose({
+      getHTMLContent,
+      instance
+    })
+
     return {
       editor,
-      instance,
       visible
     }
   },

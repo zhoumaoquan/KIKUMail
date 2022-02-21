@@ -2,7 +2,7 @@ import { computed, Ref, ComputedRef } from 'vue'
 
 import { usePagination } from 'vue-request'
 
-import type { IListParams } from '@/service/Api/Inbox'
+import type { IListParams } from '@/service/Api/types'
 
 import type { ITableList } from '@/service/Api/types'
 
@@ -18,13 +18,18 @@ const useListRequest = <T>(
     total: number
     unread: number
   }>
+  run: (params: IListParams) => Promise<ITableList<T> | null>
 } => {
-  const { loading, data, current, pageSize, total } = usePagination(request, {
-    pagination: {
-      currentKey: 'meta.current_page',
-      totalKey: 'meta.total'
+  const { loading, data, current, pageSize, total, run } = usePagination(
+    request,
+    {
+      debounceInterval: 500,
+      pagination: {
+        currentKey: 'page',
+        totalKey: 'meta.total'
+      }
     }
-  })
+  )
 
   const pagination = computed(() => ({
     position: ['bottomCenter'],
@@ -50,7 +55,8 @@ const useListRequest = <T>(
     loading,
     pagination,
     list,
-    amount
+    amount,
+    run
   }
 }
 

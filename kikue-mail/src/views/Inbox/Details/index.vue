@@ -1,6 +1,6 @@
 <template>
   <Layout :loading="loading">
-    <PageHeader isMore />
+    <PageHeader isMore @more="next" />
 
     <a-descriptions :column="2">
       <a-descriptions-item label="发件人">{{
@@ -28,7 +28,9 @@ import Layout from '@/Layout/components/Layout/index.vue'
 import PageHeader from '@/components/PageHeader/index.vue'
 import FileList from '@/components/FileList'
 
-import { useRoute } from 'vue-router'
+import { message } from 'ant-design-vue'
+
+import { useRoute, useRouter } from 'vue-router'
 
 import { useRequest } from 'vue-request'
 
@@ -39,6 +41,8 @@ import { getStorage } from '@/utils/storage'
 import { USER_INFO } from '@/assets/context'
 
 const route = useRoute()
+
+const router = useRouter()
 
 const id = computed(() => Number(route.params.id))
 
@@ -55,6 +59,18 @@ const inquire = computed(() => {
 
   return userInfo.name
 })
+
+const next = () => {
+  const is_next = data.value?.is_next
+  if (is_next && typeof is_next === 'object') {
+    const id = is_next.id
+
+    router.push(`/inbox/details/${id}`)
+    return
+  } else {
+    return message.warning('没有更多未读邮件了~')
+  }
+}
 </script>
 
 <style lang="less" scoped>

@@ -1,12 +1,13 @@
 <template>
-  <Layout>
+  <Layout :loading="loading">
     <PageHeader />
     <a-descriptions :column="1">
-      <a-descriptions-item label="手抄报">LSS直投系统</a-descriptions-item>
-      <a-descriptions-item label="主题"
-        >LSS_04_78_10_1.250环保（现代营销学苑）》 投资政府生态环境版与粤企业
-        粤港澳大湾区——以0座李圆圆为例</a-descriptions-item
-      >
+      <a-descriptions-item label="手抄报">{{
+        data?.rcpt || '未知'
+      }}</a-descriptions-item>
+      <a-descriptions-item label="主题">{{
+        data?.subject || '未知'
+      }}</a-descriptions-item>
     </a-descriptions>
 
     <div class="main-body">
@@ -15,35 +16,32 @@
         <span class="active">回复内容：</span>
       </div>
       <div class="main-body-box">
-        <div class="content">
-          环保（现代营销学苑）》
-          投资政府生态环境版与粤企业粤港澳大湾区——以0座李圆圆为例李圆……环保（现代营销学苑）》
-          投资政府生态环境版与粤企业粤港澳大湾区——以0座李圆圆为例李圆……环保（现代营销学苑）》
-          投资政府生态环境版与粤企业粤港澳大湾区——以0座李圆圆为例李圆……环保（现代营销学苑）》
-          投资政府生态环境版与粤企业粤港澳大湾区——以0座李圆圆为例李圆……
-        </div>
+        <div class="content" v-html="data?.content"></div>
 
         <div class="other">
           <p class="other-title">
             ---------- 附 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件 ----------
           </p>
-          <FileList />
+          <FileList
+            :data-source="data?.reply || []"
+            :show-type="Display.RECORD"
+          />
         </div>
 
         <div class="other">
           <p class="other-title">---------- 原始邮件 ----------</p>
           <a-descriptions :column="2">
-            <a-descriptions-item label="发件人"
-              >LSS直投系统</a-descriptions-item
-            >
+            <a-descriptions-item label="发件人">{{
+              original?.sender || 'LSS直投系统'
+            }}</a-descriptions-item>
             <a-descriptions-item label="查询"
-              >&lt;1351097225@.com></a-descriptions-item
+              >&lt;{{ original?.rcpt }}></a-descriptions-item
             >
-            <a-descriptions-item label="时间"
-              >2022年1月21日（周五）下午3:14</a-descriptions-item
-            >
+            <a-descriptions-item label="时间">{{
+              original?.create_at
+            }}</a-descriptions-item>
             <a-descriptions-item label="主题">
-              LS_S_032_091_04_《世界佳苑》基于餐饮主题文化打造的以A集团的东湖美食之有道的曹伟3.3docx
+              {{ original?.subject }}
             </a-descriptions-item>
           </a-descriptions>
         </div>
@@ -53,9 +51,32 @@
 </template>
 
 <script lang="ts" setup>
+import { computed } from 'vue'
+
 import Layout from '@/Layout/components/Layout/index.vue'
 import PageHeader from '@/components/PageHeader/index.vue'
 import FileList from '@/components/FileList'
+
+import { useRoute } from 'vue-router'
+
+import { useRequest } from 'vue-request'
+
+import { recordDetail } from '@/service/Api/record'
+
+import { Display } from '@/components/FileList/config'
+
+const route = useRoute()
+
+const id = computed(() => Number(route.params.id))
+
+const { loading, data } = useRequest(recordDetail, {
+  defaultParams: [id.value],
+  formatResult: (data) => {
+    return data.data
+  }
+})
+
+const original = computed(() => data.value?.original)
 </script>
 
 <style lang="less" scoped>

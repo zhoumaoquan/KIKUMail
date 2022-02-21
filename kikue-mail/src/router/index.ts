@@ -20,12 +20,12 @@ const InboxDetails = () =>
 const InboxEditor = () =>
   import(/* webpackChunkName: "InboxEditor" */ '@/views/Inbox/Editor/index.vue')
 
-const Reply = () =>
-  import(/* webpackChunkName: "Reply" */ '@/views/Reply/index.vue')
+const Record = () =>
+  import(/* webpackChunkName: "Record" */ '@/views/Record/index.vue')
 
-const ReplyDetails = () =>
+const RecordDetails = () =>
   import(
-    /* webpackChunkName: "ReplyDetails" */ '@/views/Reply/Details/index.vue'
+    /* webpackChunkName: "RecordDetails" */ '@/views/Record/Details/index.vue'
   )
 
 const Archive = () =>
@@ -82,14 +82,14 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: '/reply/record',
-            component: Reply,
+            component: Record,
             meta: {
               title: '回复记录'
             }
           },
           {
             path: '/reply/details/:id',
-            component: ReplyDetails,
+            component: RecordDetails,
             meta: {
               title: '回复记录'
             }
